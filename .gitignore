@@ -1,3 +1,10 @@
+*.DS_Store
+.DS_Store
+
+*.flim
+*.ipynb
+*.json
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -5,8 +12,31 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
 # Local History for Visual Studio Code
 .history/
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt

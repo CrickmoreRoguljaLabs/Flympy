@@ -1,0 +1,16 @@
+#[project]
+#name = "flympy"
+#version = "0.1.0"
+#description = "Python package for reading and processing .flim files"
+#authors = [
+#    { name = "Stephen Thornquist", email = "thornquist@rockefeller.edu" }
+#]
+#readme = "README.md"
+#python = "^3.9"
+
+[build-system]
+requires = [
+    "setuptools >= 35.0.2",
+    "setuptools_scm >= 2.0.0, <3"
+]
+build-backend = "setuptools.build_meta"
