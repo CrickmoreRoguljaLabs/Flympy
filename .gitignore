@@ -2,7 +2,7 @@
 .DS_Store
 
 *.flim
-*.ipynb
+#*.ipynb
 *.json
 
 .vscode/*
