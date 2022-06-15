@@ -1,7 +1,6 @@
 VERIFICATION_STR = "FLIMimage parameters" # Yes, I know it's a typo, there are tons in Ryohei's code..
 
 import os
-from re import I
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
