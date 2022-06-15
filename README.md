@@ -35,7 +35,7 @@ Now if you're using something like `conda` to manage your environment,
 make sure you're in the environment you want. For example, let's make a fresh environment:
 
 ```
-conda create -n flym python=3.9 ipykernel numpy scipy libtiff
+conda create -n flym python=3.9 ipykernel numpy scipy tifftools pylibtiff
 ```
 
 This will create an environment named `flym` that uses the `Python 3.9` interpreter.
