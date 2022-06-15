@@ -149,6 +149,7 @@ class FLIMParams():
         return chi_sq_exp(data, self.param_tuple, cut_negatives=cut_negatives)
 
     def probability_dist(self, data :np.ndarray):
+        
         raise NotImplementedError()
 
     def __repr__(self):
