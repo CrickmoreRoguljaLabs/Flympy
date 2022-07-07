@@ -37,7 +37,8 @@ class ParamClass():
         if not (split[0] == VERIFICATION_STR):
             raise ValueError(
                 "FLIMage save format seems to have changed. "
-                "Contact Ryohei and ask why the saved info no longer "
+                "If you are sure that this is a FLIM file "
+                "contact Ryohei and ask why the saved info no longer "
                 f"begins with {VERIFICATION_STR}. If the only change is "
                 f"in the value of this string, then go to {HERE} and "
                 "change the string at the beginning of the file under "
