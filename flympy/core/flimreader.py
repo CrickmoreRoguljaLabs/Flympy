@@ -95,7 +95,11 @@ class FlimReader():
             An array of dimensions = (timepoints, slices, colors, y_size, x_size)        
         """
         if frames is None:
-            frames = list(range(len(self.tiff_info['ifds'])-1))
+            frames = list(
+                range(
+                    (len(self.tiff_info['ifds'])-1)//(self.flim_info.volume)
+                )
+            )
         return read_frame_intensity(self.tiffarray, self.flim_info, frames) 
 
     def histogram_time_axis(self, units : FlimUnits = FlimUnits.PICOSECONDS, color : int = 0)->np.ndarray:

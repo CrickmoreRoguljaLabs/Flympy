@@ -35,6 +35,17 @@ class FlimInfo():
         self.uncaging_parameters : UncagingParameters = read_params(info_dict['ifds'], UncagingParameters)
         self.motor_parameters : MotorParameters = read_params(info_dict['ifds'], MotorParameters)
 
+    @property
+    def volume(self)->int:
+        """ Number of frames per volume """
+        slices = self.acquisition_parameters.nSlices if self.acquisition_parameters.ZStack else 1
+        n_channels = self.acquisition_parameters.nChannels
+        return slices*n_channels
+
+    @property
+    def shape(self)->tuple[int]:
+        return _array_shape(self)
+
     def __repr__(self)->str:
         retstr = "FlimInfo :"
         retstr += "\n\n" + self.acquisition_parameters.__repr__()
@@ -131,9 +142,9 @@ def read_frame_info(ifd_list : dict, frame_num : Union[int, Iterable])->FrameInf
     
     return FrameInfo(ifd_list[frame_num + 1], frame_number = frame_num)
 
-def _array_shape(flim_info)->tuple:
+def _array_shape(flim_info : FlimInfo)->tuple:
     """ Returns a tuple specifying the shape of each acquired image """
-    slices = flim_info.acquisition_parameters.nSlices
+    slices = flim_info.acquisition_parameters.nSlices if flim_info.acquisition_parameters.ZStack else 1
     n_channels = flim_info.acquisition_parameters.nChannels
     xdim, ydim = flim_info.acquisition_parameters.pixelsPerLine, flim_info.acquisition_parameters.linesPerFrame
     histo_depth = getattr(flim_info.spc_parameters,"spcData.n_dataPoint")
@@ -146,10 +157,31 @@ def read_frame_intensity(tiff_arr : libtiff.TiffArray, flim_info : FlimInfo, fra
     desired and returns an array of the intensity values within each frame.
     """
     frame_shape = _array_shape(flim_info)
+
+    # Messiness has to do with the fact that colors and slices are each stored as a separate frame
+    # so "frame", as passed, is really a VOLUME.
     if not hasattr(frames, "__iter__"):
+        #true_frames = list(range(frames*flim_info.volume,(frames+1)*flim_info.volume))
+        #return np.array([tiff_arr[each_frame] for each_frame in true_frames]).reshape(frame_shape).sum(axis=-1)
         return tiff_arr[frames].reshape(frame_shape).sum(axis=-1)
 
-    return np.array([tiff_arr[frame].reshape(frame_shape).sum(axis=-1) for frame in frames])
+    return np.array(
+        [
+            tiff_arr[frame].reshape(frame_shape).sum(axis=-1)
+            for frame in frames
+        ]
+    )
+
+    # return np.array(
+    #     [
+    #         np.array(
+    #             [
+    #                 tiff_arr[each_frame]
+    #                 for each_frame in list(range(frame*flim_info.volume, (frame+1)*flim_info.volume))
+    #             ]
+    #         ).reshape(frame_shape).sum(axis=-1) for frame in frames
+    #     ]
+    # )
 
 def read_histogram(tiff_arr : libtiff.TiffArray, flim_info : FlimInfo, frames : Union[int, Iterable], color : int)->np.ndarray:
     """

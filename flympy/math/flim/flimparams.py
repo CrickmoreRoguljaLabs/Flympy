@@ -97,7 +97,14 @@ class FLIMParams():
             return len(self.exps)
         return 0
 
-    def fit_to_data(self, data : np.ndarray, num_exps : int = 2, initial_guess : tuple = None, metric : callable = None)->OptimizeResult:
+    def fit_to_data(
+            self,
+            data : np.ndarray,
+            num_exps : int = 2,
+            initial_guess : tuple = None,
+            metric : callable = None,
+            **kwargs
+        )->OptimizeResult:
         """
         Takes in the data and adjusts the internal
         parameters of this FLIMParams object to
@@ -131,6 +138,11 @@ class FLIMParams():
 
             Argument 2: PARAMS (tuple)
 
+        **kwargs:
+
+            Accepts keyword arguments for the metric function. Default is the chi_sq_exp,
+            so when no metric is provided, uses that. 
+
         Returns
         -------
 
@@ -140,10 +152,10 @@ class FLIMParams():
         """
 
         if metric is None:
-            objective = lambda x: chi_sq_exp(data, x)
+            objective = lambda x: chi_sq_exp(data, x, **kwargs)
 
         else:
-            objective = lambda x: metric(data, x)
+            objective = lambda x: metric(data, x, **kwargs)
 
         if initial_guess is None:
             if not ((len(self.exps) == 0) and (self.irf is None)):
@@ -151,8 +163,8 @@ class FLIMParams():
             else:
                 x0 = []
                 for exp in range(num_exps):
-                    x0 += [6*(exp+1), 1/num_exps]
-                x0 += [3, 0.1] # tau_offset, tau_g
+                    x0 += [3*(exp+1), 1/num_exps]
+                x0 += [3, 0.03] # tau_offset, tau_g
                 initial_guess = tuple(x0) 
 
         fit_obj = minimize(objective, initial_guess, method='trust-constr',

@@ -59,11 +59,18 @@ class ParamClass():
         # Expects these parameters to be evaluatable Python expressions
         for assigned_val in viableVals:
             param, val = assigned_val.split(" = ")
-            setattr(
-                self,
-                param.split(self.__class__.PARAM_TYPE)[-1],
-                eval(val.split(';')[0])
-            )
+            try:
+                setattr(
+                    self,
+                    param.split(self.__class__.PARAM_TYPE)[-1],
+                    eval(val.split(';')[0])
+                )
+            except NameError: # doesn't create a Python var, leave it as a string.
+                setattr(
+                    self,
+                    param.split(self.__class__.PARAM_TYPE)[-1],
+                    val.split(';')[0]
+                )
 
     def __repr__(self)->str:
         retstr = f"{self.__class__.__name__} : \n"
